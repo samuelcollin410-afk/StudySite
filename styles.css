@@ -1,422 +1,511 @@
-<div class="app">
-  <!-- Top Bar -->
-  <header class="topbar">
-    <div class="brand" id="homeBtn" title="Back to Home">
-      <div class="logoDot"></div>
-      <div>
-        <div class="brandTitle">StudySpace</div>
-        <div class="brandSub">Quizlet-style • yours</div>
-      </div>
-    </div>
+:root{
+  --bg: #0b0f18;
+  --panel: #0f1626;
+  --panel2: #131d31;
+  --border: rgba(255,255,255,0.08);
+  --text: rgba(255,255,255,0.92);
+  --muted: rgba(255,255,255,0.62);
+  --accent: #6aa6ff;
 
-    <div class="topActions">
-      <button class="btn" id="exportAllBtn">Export All</button>
-      <button class="btn" id="importBtn">Import</button>
-      <button class="btn" id="openSettingsBtn">Settings</button>
-      <button class="btn primary" id="createStudyBtn">Create</button>
-    </div>
-  </header>
+  --danger: #ff5d5d;
 
-  <!-- HOME VIEW -->
-  <main id="viewHome" class="view">
-    <section class="card">
-      <div class="cardHead">
-        <div>
-          <h2>Studies</h2>
-          <div class="muted">Pick one to study, or create a new one.</div>
-        </div>
-        <div class="row">
-          <input id="studySearch" class="input" placeholder="Search studies..." />
-          <button class="btn" id="clearSearchBtn">Clear</button>
-        </div>
-      </div>
+  /* user overrides (empty = ignore) */
+  --user-text: ;
+  --user-muted: ;
+  --user-gk-text: ;
+  --user-test-text: ;
+  --user-fc-text: ;
+  --user-match-text: ;
+  --user-terms-text: ;
+  --user-stats-text: ;
+}
 
-      <div class="nowBar">
-        <div>
-          <div class="muted">Now</div>
-          <div id="nowTime" class="nowTime">—</div>
-        </div>
-        <div class="todayBox">
-          <div class="muted">Today</div>
-          <div id="todayReminders" class="todayReminders">No reminders today.</div>
-        </div>
-      </div>
+:root[data-theme="light"]{
+  --bg: #f6f7fb;
+  --panel: #ffffff;
+  --panel2: #f2f4fb;
+  --border: rgba(10,10,10,0.10);
+  --text: rgba(20,20,20,0.92);
+  --muted: rgba(20,20,20,0.62);
+  --danger: #e54848;
+}
 
-      <div id="studiesList" class="list"></div>
-    </section>
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: var(--bg);
+  color: var(--text);
+}
 
-    <div class="grid2">
-      <section class="card">
-        <div class="cardHead">
-          <div>
-            <h3>Calendar</h3>
-            <div class="muted">Jan 2026 → Jan 2027. Click a date to view/add reminders.</div>
-          </div>
-        </div>
-        <div id="calendarWrap"></div>
-      </section>
+/* Global overrides if set */
+body{ color: var(--user-text, var(--text)); }
+.muted{ color: var(--user-muted, var(--muted)); }
 
-      <section class="card">
-        <div class="cardHead">
-          <div>
-            <h3>To-do</h3>
-            <div class="muted">Check = auto delete in 12s. Delete button = 6s countdown.</div>
-          </div>
-        </div>
+a{ color: var(--accent); text-decoration:none; }
+a:hover{ text-decoration:underline; }
 
-        <div class="row">
-          <input id="todoInput" class="input" placeholder="New to-do..." />
-          <button class="btn primary" id="addTodoBtn">Add</button>
-        </div>
+.app{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
 
-        <div id="todoList" class="list"></div>
-      </section>
-    </div>
-  </main>
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
 
-  <!-- STUDY VIEW -->
-  <main id="viewStudy" class="view hidden">
-    <section class="card">
-      <div class="cardHead">
-        <div>
-          <div class="muted">
-            <a href="#" id="backToHomeLink">← Home</a>
-          </div>
-          <h2 id="studyTitle">Study</h2>
-          <div id="studyMeta" class="muted">—</div>
-        </div>
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  cursor:pointer;
+  user-select:none;
+}
+.logoDot{
+  width: 14px; height: 14px;
+  border-radius: 99px;
+  background: var(--accent);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 18%, transparent);
+}
+.brandTitle{ font-weight: 950; letter-spacing: 0.2px; }
+.brandSub{ font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-        <div class="row">
-          <label class="toggle">
-            <input type="checkbox" id="favoritesOnlyToggle" />
-            <span>Favorites only</span>
-          </label>
+.topActions{ display:flex; gap:10px; flex-wrap:wrap; }
 
-          <button class="btn" id="exportStudyBtn">Export Study</button>
-          <button class="btn" id="renameStudyBtn">Rename</button>
-          <button class="btn danger" id="deleteStudyBtn">Delete</button>
-        </div>
-      </div>
+.view{ display:block; }
+.hidden{ display:none !important; }
 
-      <div class="tabs">
-        <button class="tab active" data-tab="terms">Terms</button>
-        <button class="tab" data-tab="flashcards">Flashcards</button>
-        <button class="tab" data-tab="gimkit">Gimkit</button>
-        <button class="tab" data-tab="match">Match</button>
-        <button class="tab" data-tab="test">Test</button>
-        <button class="tab" data-tab="stats">Stats</button>
-      </div>
+.card{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.20);
+}
 
-      <!-- TERMS -->
-      <section id="tab_terms" class="panel">
-        <div class="grid2">
-          <div class="card sub">
-            <div class="cardHead">
-              <div>
-                <h3>Add / Edit Term</h3>
-                <div class="muted">Tip: if you have lots of terms, use Bulk Import.</div>
-              </div>
-            </div>
+.card.sub{
+  background: color-mix(in oklab, var(--panel) 88%, transparent);
+  box-shadow: none;
+}
 
-            <input id="termQ" class="input" placeholder="Question / term..." />
-            <input id="termA" class="input" placeholder="Answer / definition..." />
+.cardHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.cardHead h2, .cardHead h3{
+  margin: 0;
+  font-size: 20px;
+}
+.cardHead h3{ font-size: 18px; }
 
-            <div class="row">
-              <button class="btn primary" id="saveTermBtn">Add term</button>
-              <button class="btn" id="cancelEditTermBtn" disabled>Cancel edit</button>
-            </div>
+.muted{ font-size: 13px; }
 
-            <hr class="sep" />
+.row{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
 
-            <div class="cardHead">
-              <div>
-                <h3>Bulk Import</h3>
-                <div class="muted">Paste one per line as <b>Question/Answer</b> (first slash splits).</div>
-              </div>
-            </div>
+.input{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
+  color: var(--text);
+  outline:none;
+}
+.input:focus{
+  border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 18%, transparent);
+}
 
-            <textarea id="bulkInput" class="input" rows="9" placeholder="Example:
-Home/la casa
-Attic/ático
-To clean/limpiar"></textarea>
+textarea.input{ resize: vertical; }
 
-            <div class="row">
-              <button class="btn primary" id="bulkImportBtn">Import</button>
-              <button class="btn" id="bulkClearBtn">Clear</button>
-            </div>
+.btn{
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
+  color: var(--text);
+  cursor:pointer;
+  font-weight: 850;
+}
+.btn:hover{ filter: brightness(1.05); }
+.btn:disabled{ opacity:0.5; cursor:not-allowed; }
 
-            <div class="hint">
-              Heads-up: ChatGPT can quickly convert messy notes into clean Question/Answer lines.
-            </div>
-          </div>
+.btn.primary{
+  background: color-mix(in oklab, var(--accent) 40%, var(--panel2));
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+}
+.btn.danger{
+  background: color-mix(in oklab, var(--danger) 25%, var(--panel2));
+  border-color: color-mix(in oklab, var(--danger) 35%, var(--border));
+}
 
-          <div class="card sub">
-            <div class="cardHead">
-              <div>
-                <h3>Terms</h3>
-                <div class="muted">Favorite terms to focus only on them in any mode.</div>
-              </div>
-              <div class="row">
-                <input id="termSearch" class="input" placeholder="Search terms..." />
-                <button class="btn" id="clearTermSearchBtn">Clear</button>
-              </div>
-            </div>
+.iconBtn{
+  border:none;
+  background: transparent;
+  color: var(--muted);
+  cursor:pointer;
+  font-weight: 900;
+  padding: 6px 8px;
+  border-radius: 12px;
+}
+.iconBtn:hover{
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
+  color: var(--text);
+}
 
-            <div id="termsList" class="list"></div>
-          </div>
-        </div>
-      </section>
+.pill{
+  font-size: 12px;
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
+}
 
-      <!-- FLASHCARDS -->
-      <section id="tab_flashcards" class="panel hidden">
-        <div class="card sub">
-          <div class="cardHead">
-            <div>
-              <h3>Flashcards</h3>
-              <div class="muted">Shortcuts: ← / →, Space to flip</div>
-            </div>
-            <div class="row">
-              <div id="fcCounter" class="pill">0 / 0</div>
-              <button class="btn" id="fcRestartBtn">Restart</button>
-              <button class="btn" id="fcPrevBtn">←</button>
-              <button class="btn primary" id="fcNextBtn">→</button>
-            </div>
-          </div>
+.list{ display:flex; flex-direction:column; gap: 10px; }
 
-          <div id="flashCard" class="flashCard">
-            <div id="flashInner" class="flashInner">
-              <div class="cardFace front">
-                <div id="fcQ" class="bigText">—</div>
-              </div>
-              <div class="cardFace back">
-                <div id="fcA" class="bigText">—</div>
-              </div>
-            </div>
-          </div>
+.studyItem{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
+}
+.studyItem .name{ font-weight: 950; }
+.studyItem .meta{ color: var(--muted); font-size: 12px; margin-top: 4px; }
+.studyItem .right{ display:flex; gap: 10px; align-items:center; }
 
-          <div class="hint">Click the card to flip.</div>
-        </div>
-      </section>
+.grid2{
+  display:grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+@media (max-width: 980px){
+  .grid2{ grid-template-columns: 1fr; }
+}
 
-      <!-- GIMKIT -->
-      <section id="tab_gimkit" class="panel hidden">
-        <div class="card sub">
-          <div class="cardHead">
-            <div>
-              <h3>Gimkit</h3>
-              <div class="muted">Shortcuts: 1/2/3/4 to pick • Enter to continue</div>
-            </div>
-            <div class="row">
-              <div id="gkCounter" class="pill">0 / 0</div>
-              <button class="btn" id="gkRestartBtn">Restart</button>
-            </div>
-          </div>
+.nowBar{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  justify-content:space-between;
+  padding: 10px 12px;
+  border:1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--panel2) 55%, transparent);
+  margin-bottom: 10px;
+}
+.nowTime{
+  font-weight: 950;
+  font-size: 16px;
+  margin-top: 4px;
+}
+.todayBox{ max-width: 60%; }
+.todayReminders{
+  font-weight: 800;
+  font-size: 13px;
+  margin-top: 4px;
+  white-space: pre-wrap;
+  color: var(--text);
+}
 
-          <div class="gkPrompt" id="gkPrompt">—</div>
+/* Tabs */
+.tabs{
+  display:flex;
+  gap: 8px;
+  flex-wrap:wrap;
+  margin: 12px 0;
+}
+.tab{
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
+  cursor:pointer;
+  font-weight: 900;
+  color: var(--text);
+}
+.tab.active{
+  background: color-mix(in oklab, var(--accent) 30%, var(--panel2));
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+}
+.panel{ margin-top: 8px; }
 
-          <div class="gkGrid" id="gkChoices"></div>
+.sep{
+  border:none;
+  border-top: 1px solid var(--border);
+  margin: 12px 0;
+  opacity: 0.9;
+}
 
-          <div id="gkFeedback" class="hint hidden"></div>
-          <button class="btn primary hidden" id="gkNextBtn">Continue</button>
-        </div>
-      </section>
+.hint{
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 10px;
+}
 
-      <!-- MATCH -->
-      <section id="tab_match" class="panel hidden">
-        <div class="card sub">
-          <div class="cardHead">
-            <div>
-              <h3>Match</h3>
-              <div class="muted">Drag answers onto the correct question.</div>
-            </div>
-            <div class="row">
-              <button class="btn" id="matchRestartBtn">Restart</button>
-            </div>
-          </div>
+/* Terms list */
+.termRow{
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
+}
+.termTop{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 10px;
+}
+.termQ{ font-weight: 950; }
+.termA{ margin-top: 8px; }
+.termActions{ display:flex; gap: 8px; }
 
-          <div class="matchGrid">
-            <div>
-              <div class="muted">Questions</div>
-              <div id="matchQs" class="list"></div>
-            </div>
-            <div>
-              <div class="muted">Answers (drag)</div>
-              <div id="matchAs" class="list"></div>
-            </div>
-          </div>
+/* Flashcards */
+.flashCard{
+  perspective: 1200px;
+  width: min(680px, 100%);
+  margin: 0 auto;
+  padding: 8px 0;
+}
+.flashInner{
+  width: 100%;
+  height: 320px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+  cursor: pointer;
+}
+.flashInner.flipped{ transform: rotateY(180deg); }
 
-          <div id="matchStatus" class="hint"></div>
-        </div>
-      </section>
+.cardFace{
+  position:absolute;
+  inset: 0;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.25);
 
-      <!-- TEST -->
-      <section id="tab_test" class="panel hidden">
-        <div class="card sub">
-          <div class="cardHead">
-            <div>
-              <h3>Test</h3>
-              <div class="muted">No repeats in a test. Saved to your test history.</div>
-            </div>
-            <div class="row">
-              <input id="testCount" class="input" type="number" min="1" value="10" style="max-width:120px;" />
-              <button class="btn primary" id="startTestBtn">Start</button>
-              <button class="btn" id="resetTestBtn">Reset</button>
-            </div>
-          </div>
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding: 22px;
+  backface-visibility: hidden;
+}
+.cardFace.back{
+  transform: rotateY(180deg);
+}
+.bigText{
+  font-size: 24px;
+  font-weight: 950;
+  line-height: 1.25;
+  max-width: 92%;
+  word-break: break-word;
+}
 
-          <div id="testArea" class="hidden"></div>
-          <button id="submitTestBtn" class="btn primary hidden">Submit</button>
+/* Gimkit */
+.gkPrompt{
+  font-weight: 950;
+  font-size: 18px;
+  margin: 8px 0 12px;
+}
+.gkGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 820px){
+  .gkGrid{ grid-template-columns: 1fr; }
+}
+.choice{
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
+  font-weight: 950;
+  cursor:pointer;
+  min-height: 56px;
+}
+.choice:hover{ filter: brightness(1.05); }
+.choice.correct{
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 18%, transparent);
+}
+.choice.wrong{
+  border-color: color-mix(in oklab, var(--danger) 45%, var(--border));
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--danger) 18%, transparent);
+}
 
-          <div id="testResults" class="hidden"></div>
+/* Match */
+.matchGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 900px){
+  .matchGrid{ grid-template-columns: 1fr; }
+}
+.matchCard{
+  border:1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  background: color-mix(in oklab, var(--panel2) 55%, transparent);
+}
+.matchDrop{
+  border:1px dashed var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  margin-top: 10px;
+  min-height: 44px;
+  color: var(--muted);
+}
+.dragAns{
+  cursor: grab;
+  user-select:none;
+}
+.dragAns:active{ cursor: grabbing; }
+.matchGood{ outline: 2px solid color-mix(in oklab, var(--accent) 70%, transparent); }
+.matchBad{ outline: 2px solid color-mix(in oklab, var(--danger) 70%, transparent); }
 
-          <hr class="sep" />
-          <div class="cardHead">
-            <h3>Test History</h3>
-          </div>
-          <div id="testHistory" class="list"></div>
-        </div>
-      </section>
+/* Test */
+.testQ{
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
+  margin-bottom: 10px;
+}
+.qText{ font-weight: 950; margin-bottom: 10px; }
 
-      <!-- STATS -->
-      <section id="tab_stats" class="panel hidden">
-        <div class="grid2">
-          <div class="card sub">
-            <div class="cardHead">
-              <div>
-                <h3>Summary</h3>
-                <div class="muted">Tracks misses across Gimkit / Match / Tests.</div>
-              </div>
-            </div>
+/* Stats */
+.statsGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.statBox{
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
+}
+.statBox .big{ font-weight: 950; font-size: 18px; }
+.statBox .small{ color: var(--muted); font-size: 12px; margin-top: 4px; }
 
-            <div id="studyStatsSummary" class="statsGrid"></div>
-          </div>
+/* Calendar */
+.calendar{ width: 100%; }
+.calHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom: 10px;
+}
+.calTitle{ font-weight: 950; }
+.calNav{ display:flex; gap: 10px; }
+.calGrid{
+  display:grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.dow{
+  color: var(--muted);
+  font-size: 12px;
+  text-align:center;
+  padding: 4px 0;
+}
+.day{
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
+  color: var(--text);
+  padding: 10px;
+  cursor:pointer;
+  min-height: 56px;
+  position:relative;
+}
+.day:hover{ filter: brightness(1.05); }
+.day .num{ font-weight: 900; }
+.day.today{
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+}
+.dot{
+  width: 8px; height: 8px;
+  border-radius: 99px;
+  background: var(--accent);
+  position:absolute;
+  right: 10px;
+  bottom: 10px;
+}
 
-          <div class="card sub">
-            <div class="cardHead">
-              <div>
-                <h3>Most Missed</h3>
-                <div class="muted">Terms you miss the most.</div>
-              </div>
-            </div>
+/* To-do */
+.todoItem{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
+}
+.todoLeft{ display:flex; gap: 10px; align-items:flex-start; }
+.todoText{ font-weight: 900; }
+.todoMeta{ color: var(--muted); font-size: 12px; margin-top: 4px; }
+.todoCountdown{
+  font-weight: 950;
+  color: var(--muted);
+}
 
-            <div id="mostMissed" class="list"></div>
-          </div>
-        </div>
-      </section>
-    </section>
-  </main>
+/* Modals */
+.modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 18px;
+  z-index: 50;
+}
+.modalCard{
+  width: min(720px, 100%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+.notifyText{
+  white-space: pre-wrap;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
+  margin: 10px 0 14px;
+}
 
-  <!-- CREATE STUDY MODAL -->
-  <div id="createStudyModal" class="modal hidden">
-    <div class="modalCard">
-      <div class="cardHead">
-        <h3>Create Study</h3>
-        <button class="iconBtn" id="closeCreateStudyBtn">✕</button>
-      </div>
-
-      <input id="newStudyName" class="input" placeholder="Study name..." />
-      <div class="row">
-        <button class="btn primary" id="confirmCreateStudyBtn">Create</button>
-        <button class="btn" id="cancelCreateStudyBtn">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- IMPORT MODAL -->
-  <div id="importModal" class="modal hidden">
-    <div class="modalCard">
-      <div class="cardHead">
-        <h3>Import JSON</h3>
-        <button class="iconBtn" id="closeImportBtn">✕</button>
-      </div>
-
-      <div class="muted">Paste exported JSON. If a study name already exists, you’ll choose Merge or Replace.</div>
-      <textarea id="importText" class="input" rows="10" placeholder='Paste JSON...'></textarea>
-
-      <div class="row">
-        <button class="btn primary" id="confirmImportBtn">Import</button>
-        <button class="btn" id="cancelImportBtn">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SETTINGS MODAL -->
-  <div id="settingsModal" class="modal hidden">
-    <div class="modalCard">
-      <div class="cardHead">
-        <h3>Settings</h3>
-        <button class="iconBtn" id="closeSettingsBtn">✕</button>
-      </div>
-
-      <div class="row">
-        <button class="btn" id="toggleThemeBtn">Toggle Light/Dark</button>
-        <div class="row" style="gap:10px;">
-          <div class="muted">Accent</div>
-          <input id="accentPicker" type="color" class="input" style="max-width:70px; padding:6px;" />
-        </div>
-      </div>
-
-      <hr class="sep" />
-
-      <div class="cardHead">
-        <h3>Text Colors</h3>
-      </div>
-
-      <div class="row">
-        <select id="colorArea" class="input">
-          <option value="globalText">Global text</option>
-          <option value="globalMuted">Global muted</option>
-          <option value="gimkitText">Gimkit text</option>
-          <option value="testText">Test text</option>
-          <option value="flashText">Flashcards text</option>
-          <option value="matchText">Match text</option>
-          <option value="termsText">Terms text</option>
-          <option value="statsText">Stats text</option>
-        </select>
-        <input id="colorValue" type="color" class="input" style="max-width:70px; padding:6px;" />
-        <button class="btn" id="applyColorBtn">Apply</button>
-        <button class="btn danger" id="clearColorBtn">Clear</button>
-      </div>
-
-      <div class="hint">Tip: leave a color empty (Clear) to go back to default.</div>
-    </div>
-  </div>
-
-  <!-- DAY MODAL -->
-  <div id="dayModal" class="modal hidden">
-    <div class="modalCard">
-      <div class="cardHead">
-        <h3 id="dayModalTitle">YYYY-MM-DD</h3>
-        <button class="iconBtn" id="closeDayModalBtn">✕</button>
-      </div>
-
-      <div id="dayEventsList" class="list"></div>
-
-      <div class="row">
-        <input id="eventText" class="input" placeholder="Add a reminder..." />
-        <button class="btn primary" id="saveEventBtn">Add</button>
-        <button class="btn danger" id="deleteEventBtn" disabled>Delete edit</button>
-      </div>
-
-      <div class="row">
-        <button class="btn" id="closeDayModalBtn2">Close</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- NOTIFY MODAL -->
-  <div id="notifyModal" class="modal hidden">
-    <div class="modalCard">
-      <div class="cardHead">
-        <h3>Today</h3>
-      </div>
-      <div id="notifyText" class="notifyText"></div>
-
-      <div class="row">
-        <button class="btn primary" id="dismissNotifyBtn">Close</button>
-        <button class="btn" id="editNotifyBtn">Edit</button>
-      </div>
-      <button class="btn hidden" id="closeNotifyBtn"></button>
-    </div>
-  </div>
-</div>
+/* Per-tab text overrides (only affect that panel) */
+#tab_gimkit, #tab_gimkit * { color: var(--user-gk-text, inherit); }
+#tab_test, #tab_test * { color: var(--user-test-text, inherit); }
+#tab_flashcards, #tab_flashcards * { color: var(--user-fc-text, inherit); }
+#tab_match, #tab_match * { color: var(--user-match-text, inherit); }
+#tab_terms, #tab_terms * { color: var(--user-terms-text, inherit); }
+#tab_stats, #tab_stats * { color: var(--user-stats-text, inherit); }
