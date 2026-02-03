@@ -1,45 +1,36 @@
-/* =========================================================
-   StudySpace — Clean Quizlet-style UI (fixed)
-   - No empty CSS vars (uses unset)
-   - Removed color-mix() for maximum compatibility
-   - Flashcard text centered (already)
-   - Better toggles, tabs, buttons, cards
-========================================================= */
-
 :root{
   --bg: #0b0f18;
   --panel: #0f1626;
   --panel2: #131d31;
-  --border: rgba(255,255,255,0.10);
+  --border: rgba(255,255,255,0.08);
   --text: rgba(255,255,255,0.92);
   --muted: rgba(255,255,255,0.62);
   --accent: #6aa6ff;
+
   --danger: #ff5d5d;
 
-  /* user overrides (unset = ignore) */
-  --user-text: unset;
-  --user-muted: unset;
-  --user-gk-text: unset;
-  --user-test-text: unset;
-  --user-fc-text: unset;
-  --user-match-text: unset;
-  --user-terms-text: unset;
-  --user-stats-text: unset;
+  /* user overrides (empty = ignore) */
+  --user-text: ;
+  --user-muted: ;
+  --user-gk-text: ;
+  --user-test-text: ;
+  --user-fc-text: ;
+  --user-match-text: ;
+  --user-terms-text: ;
+  --user-stats-text: ;
 }
 
 :root[data-theme="light"]{
   --bg: #f6f7fb;
   --panel: #ffffff;
   --panel2: #f2f4fb;
-  --border: rgba(10,10,10,0.12);
+  --border: rgba(10,10,10,0.10);
   --text: rgba(20,20,20,0.92);
   --muted: rgba(20,20,20,0.62);
   --danger: #e54848;
 }
 
 *{ box-sizing:border-box; }
-html, body{ height: 100%; }
-
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
@@ -54,7 +45,6 @@ body{ color: var(--user-text, var(--text)); }
 a{ color: var(--accent); text-decoration:none; }
 a:hover{ text-decoration:underline; }
 
-/* Layout */
 .app{
   max-width: 1200px;
   margin: 0 auto;
@@ -78,9 +68,9 @@ a:hover{ text-decoration:underline; }
 }
 .logoDot{
   width: 14px; height: 14px;
-  border-radius: 999px;
+  border-radius: 99px;
   background: var(--accent);
-  box-shadow: 0 0 0 6px rgba(106,166,255,0.18);
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 18%, transparent);
 }
 .brandTitle{ font-weight: 950; letter-spacing: 0.2px; }
 .brandSub{ font-size: 12px; color: var(--muted); margin-top: 2px; }
@@ -90,7 +80,6 @@ a:hover{ text-decoration:underline; }
 .view{ display:block; }
 .hidden{ display:none !important; }
 
-/* Cards */
 .card{
   background: var(--panel);
   border: 1px solid var(--border);
@@ -100,7 +89,7 @@ a:hover{ text-decoration:underline; }
 }
 
 .card.sub{
-  background: rgba(255,255,255,0.03);
+  background: color-mix(in oklab, var(--panel) 88%, transparent);
   box-shadow: none;
 }
 
@@ -126,49 +115,41 @@ a:hover{ text-decoration:underline; }
   flex-wrap:wrap;
 }
 
-/* Inputs */
 .input{
   width: 100%;
   padding: 10px 12px;
   border-radius: 14px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
   color: var(--text);
   outline:none;
 }
-:root[data-theme="light"] .input{
-  background: rgba(10,10,10,0.03);
-}
 .input:focus{
-  border-color: rgba(106,166,255,0.55);
-  box-shadow: 0 0 0 6px rgba(106,166,255,0.18);
+  border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 18%, transparent);
 }
 
 textarea.input{ resize: vertical; }
 
-/* Buttons */
 .btn{
   padding: 10px 12px;
   border-radius: 14px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
   color: var(--text);
   cursor:pointer;
   font-weight: 850;
 }
-:root[data-theme="light"] .btn{
-  background: rgba(10,10,10,0.04);
-}
-.btn:hover{ filter: brightness(1.06); }
+.btn:hover{ filter: brightness(1.05); }
 .btn:disabled{ opacity:0.5; cursor:not-allowed; }
 
 .btn.primary{
-  background: rgba(106,166,255,0.28);
-  border-color: rgba(106,166,255,0.35);
+  background: color-mix(in oklab, var(--accent) 40%, var(--panel2));
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
 }
 .btn.danger{
-  background: rgba(255,93,93,0.22);
-  border-color: rgba(255,93,93,0.35);
+  background: color-mix(in oklab, var(--danger) 25%, var(--panel2));
+  border-color: color-mix(in oklab, var(--danger) 35%, var(--border));
 }
 
 .iconBtn{
@@ -181,29 +162,21 @@ textarea.input{ resize: vertical; }
   border-radius: 12px;
 }
 .iconBtn:hover{
-  background: rgba(255,255,255,0.06);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
   color: var(--text);
 }
-:root[data-theme="light"] .iconBtn:hover{
-  background: rgba(10,10,10,0.06);
-}
 
-/* Pills */
 .pill{
   font-size: 12px;
   font-weight: 900;
   padding: 6px 10px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
-}
-:root[data-theme="light"] .pill{
-  background: rgba(10,10,10,0.04);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
 }
 
 .list{ display:flex; flex-direction:column; gap: 10px; }
 
-/* Study Items */
 .studyItem{
   display:flex;
   align-items:center;
@@ -212,16 +185,12 @@ textarea.input{ resize: vertical; }
   padding: 12px;
   border-radius: 16px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
-}
-:root[data-theme="light"] .studyItem{
-  background: rgba(10,10,10,0.03);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
 }
 .studyItem .name{ font-weight: 950; }
 .studyItem .meta{ color: var(--muted); font-size: 12px; margin-top: 4px; }
 .studyItem .right{ display:flex; gap: 10px; align-items:center; }
 
-/* Two-column areas */
 .grid2{
   display:grid;
   grid-template-columns: 1.2fr 0.8fr;
@@ -232,7 +201,6 @@ textarea.input{ resize: vertical; }
   .grid2{ grid-template-columns: 1fr; }
 }
 
-/* Now bar */
 .nowBar{
   display:flex;
   gap:12px;
@@ -241,11 +209,8 @@ textarea.input{ resize: vertical; }
   padding: 10px 12px;
   border:1px solid var(--border);
   border-radius: 14px;
-  background: rgba(255,255,255,0.04);
+  background: color-mix(in oklab, var(--panel2) 55%, transparent);
   margin-bottom: 10px;
-}
-:root[data-theme="light"] .nowBar{
-  background: rgba(10,10,10,0.03);
 }
 .nowTime{
   font-weight: 950;
@@ -261,25 +226,6 @@ textarea.input{ resize: vertical; }
   color: var(--text);
 }
 
-/* Toggle */
-.toggle{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.03);
-}
-:root[data-theme="light"] .toggle{
-  background: rgba(10,10,10,0.03);
-}
-.toggle input{
-  width: 18px;
-  height: 18px;
-  accent-color: var(--accent);
-}
-
 /* Tabs */
 .tabs{
   display:flex;
@@ -291,17 +237,14 @@ textarea.input{ resize: vertical; }
   padding: 10px 12px;
   border-radius: 14px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
   cursor:pointer;
   font-weight: 900;
   color: var(--text);
 }
-:root[data-theme="light"] .tab{
-  background: rgba(10,10,10,0.04);
-}
 .tab.active{
-  background: rgba(106,166,255,0.22);
-  border-color: rgba(106,166,255,0.35);
+  background: color-mix(in oklab, var(--accent) 30%, var(--panel2));
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
 }
 .panel{ margin-top: 8px; }
 
@@ -323,10 +266,7 @@ textarea.input{ resize: vertical; }
   padding: 12px;
   border-radius: 16px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
-}
-:root[data-theme="light"] .termRow{
-  background: rgba(10,10,10,0.03);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
 }
 .termTop{
   display:flex;
@@ -360,7 +300,7 @@ textarea.input{ resize: vertical; }
   inset: 0;
   border-radius: 20px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.05);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
   box-shadow: 0 18px 40px rgba(0,0,0,0.25);
 
   display:flex;
@@ -370,12 +310,9 @@ textarea.input{ resize: vertical; }
   padding: 22px;
   backface-visibility: hidden;
 }
-:root[data-theme="light"] .cardFace{
-  background: rgba(10,10,10,0.03);
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+.cardFace.back{
+  transform: rotateY(180deg);
 }
-.cardFace.back{ transform: rotateY(180deg); }
-
 .bigText{
   font-size: 24px;
   font-weight: 950;
@@ -402,22 +339,19 @@ textarea.input{ resize: vertical; }
   padding: 14px;
   border-radius: 18px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: color-mix(in oklab, var(--panel2) 70%, transparent);
   font-weight: 950;
   cursor:pointer;
   min-height: 56px;
 }
-:root[data-theme="light"] .choice{
-  background: rgba(10,10,10,0.03);
-}
 .choice:hover{ filter: brightness(1.05); }
 .choice.correct{
-  border-color: rgba(106,166,255,0.55);
-  box-shadow: 0 0 0 6px rgba(106,166,255,0.18);
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--accent) 18%, transparent);
 }
 .choice.wrong{
-  border-color: rgba(255,93,93,0.55);
-  box-shadow: 0 0 0 6px rgba(255,93,93,0.18);
+  border-color: color-mix(in oklab, var(--danger) 45%, var(--border));
+  box-shadow: 0 0 0 6px color-mix(in oklab, var(--danger) 18%, transparent);
 }
 
 /* Match */
@@ -433,10 +367,7 @@ textarea.input{ resize: vertical; }
   border:1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
-  background: rgba(255,255,255,0.04);
-}
-:root[data-theme="light"] .matchCard{
-  background: rgba(10,10,10,0.03);
+  background: color-mix(in oklab, var(--panel2) 55%, transparent);
 }
 .matchDrop{
   border:1px dashed var(--border);
@@ -451,19 +382,16 @@ textarea.input{ resize: vertical; }
   user-select:none;
 }
 .dragAns:active{ cursor: grabbing; }
-.matchGood{ outline: 2px solid rgba(106,166,255,0.65); }
-.matchBad{ outline: 2px solid rgba(255,93,93,0.65); }
+.matchGood{ outline: 2px solid color-mix(in oklab, var(--accent) 70%, transparent); }
+.matchBad{ outline: 2px solid color-mix(in oklab, var(--danger) 70%, transparent); }
 
 /* Test */
 .testQ{
   padding: 12px;
   border-radius: 16px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
   margin-bottom: 10px;
-}
-:root[data-theme="light"] .testQ{
-  background: rgba(10,10,10,0.03);
 }
 .qText{ font-weight: 950; margin-bottom: 10px; }
 
@@ -477,10 +405,7 @@ textarea.input{ resize: vertical; }
   padding: 12px;
   border-radius: 16px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
-}
-:root[data-theme="light"] .statBox{
-  background: rgba(10,10,10,0.03);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
 }
 .statBox .big{ font-weight: 950; font-size: 18px; }
 .statBox .small{ color: var(--muted); font-size: 12px; margin-top: 4px; }
@@ -509,22 +434,21 @@ textarea.input{ resize: vertical; }
 .day{
   border-radius: 14px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
   color: var(--text);
   padding: 10px;
   cursor:pointer;
   min-height: 56px;
   position:relative;
 }
-:root[data-theme="light"] .day{
-  background: rgba(10,10,10,0.03);
-}
 .day:hover{ filter: brightness(1.05); }
 .day .num{ font-weight: 900; }
-.day.today{ border-color: rgba(106,166,255,0.55); }
+.day.today{
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+}
 .dot{
   width: 8px; height: 8px;
-  border-radius: 999px;
+  border-radius: 99px;
   background: var(--accent);
   position:absolute;
   right: 10px;
@@ -540,15 +464,15 @@ textarea.input{ resize: vertical; }
   padding: 12px;
   border-radius: 16px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
-}
-:root[data-theme="light"] .todoItem{
-  background: rgba(10,10,10,0.03);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
 }
 .todoLeft{ display:flex; gap: 10px; align-items:flex-start; }
 .todoText{ font-weight: 900; }
 .todoMeta{ color: var(--muted); font-size: 12px; margin-top: 4px; }
-.todoCountdown{ font-weight: 950; color: var(--muted); }
+.todoCountdown{
+  font-weight: 950;
+  color: var(--muted);
+}
 
 /* Modals */
 .modal{
@@ -574,11 +498,8 @@ textarea.input{ resize: vertical; }
   padding: 12px;
   border-radius: 16px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: color-mix(in oklab, var(--panel2) 60%, transparent);
   margin: 10px 0 14px;
-}
-:root[data-theme="light"] .notifyText{
-  background: rgba(10,10,10,0.03);
 }
 
 /* Per-tab text overrides (only affect that panel) */
